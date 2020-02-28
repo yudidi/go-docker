@@ -1,6 +1,7 @@
 package container
 
 import (
+	"fmt"
 	"github.com/sirupsen/logrus"
 	"os"
 	"syscall"
@@ -20,6 +21,7 @@ func RunContainerInitProcess(command string, args []string) error {
 
 	err = syscall.Exec(command, []string{command}, os.Environ())
 	if err != nil {
+		fmt.Println("RunContainerInitProcess:", err)
 		return err
 	}
 	return nil

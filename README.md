@@ -19,7 +19,7 @@
 
 # 测试通过程序启动init命令，但是init只打印数据，不启动用户进程。
 
-* 感受下在进程中用"exec.Command("/proc/self/exe", "init").Start()"启动一个进程(这个进程恰好是自己)
+* 感受下在进程中用"exec.Command("/proc/self/exe", "init").Start()"启动一个进程(`自己调用自己`,但是执行不同的命令)
 
 运行结果: 进程2不去启动进程3，只是打印一些东西。
 

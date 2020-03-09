@@ -5,16 +5,44 @@
 
 
 
-# exec介绍
-linux一共有2种启动新进程的底层调用。
-fork:这是启动一个新的进程。这个命令执行完后，会存放父子两个进程。
+# syscall.Exec启动进程和os/exec.Command启动进程的区别
 
-exec:这是启动一个外部进程，同时这个子进程会完全替换掉启动他的父进程，就好像父进程的唯一意义就是为了启动他这个进程。
-这个命令执行完后，就只剩下子进程了，并且这个子进程的PID也是他的父进程的。
+* os/exec.Command("/bin/sh")启动/bin/sh程序
 
- A point worth noting here is that with a call to any of the exec family of functions, the current process image is replaced by a new process image.
- 
- > [Linux Processes – Process IDs, fork, execv, wait, waitpid C Functions](https://www.thegeekstuff.com/2012/03/c-process-control-functions/)
+```
+func main()  {
+    log.Printf("pid:%d\n", os.Getpid())
+    cmd := exec.Command("/bin/sh")
+    
+    cmd.Stdin = os.Stdin
+    cmd.Stderr = os.Stderr
+    cmd.Stdout = os.Stdout
+    if err := cmd.Run(); err != nil {
+    }
+}
+// output // 可以看到PID是不同的
+root@nicktming:~/go/src/github.com/nicktming/mydocker/test/syscall# go run TestExec.go 
+2019/03/25 23:47:29 pid:20255
+# echo $$
+20258
+```
+
+* syscall.Exec启动/bin/sh进程
+
+```
+func main()  {
+    log.Printf("pid:%d\n", os.Getpid())
+    command := "/bin/sh"
+    if err := syscall.Exec(command, []string{command}, os.Environ()); err != nil {
+    }   
+}
+//output 可以看到PID是一样的，也就是/bin/sh完全替代了go进程的进程信息。这也是linux中exec系统函数本来的功能
+root@nicktming:~/go/src/github.com/nicktming/mydocker/test/syscall# go run TestExec.go 
+2019/03/25 23:53:52 pid:20872
+# echo $$
+20872
+```
+
  
  # 代码改动
  ```

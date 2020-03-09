@@ -2,9 +2,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/sirupsen/logrus"
+	"os"
+
 	"github.com/urfave/cli"
-	//"go-docker/container"
+
+	"go-docker/container"
 	"time"
 )
 
@@ -23,10 +25,12 @@ var runCommand = cli.Command{
 		if len(context.Args()) < 1 {
 			return fmt.Errorf("missing container args")
 		}
+		fmt.Printf("run PID: %d \n", os.Getpid())
 		// cmd 为容器启动后运行的第一个命令程序
 		cmd := context.Args().Get(0)
 		tty := context.Bool("ti")
-		return Run(cmd, tty)
+		//return Run(cmd, tty)
+		return container.NewParentProcess(cmd, tty)
 	},
 }
 
@@ -35,12 +39,11 @@ var initCommand = cli.Command{
 	Name:  "init",
 	Usage: "Init container process run user's process in container. Do not call it outside",
 	Action: func(context *cli.Context) error {
-		logrus.Infof("init come on")
-		cmd := context.Args().Get(0)
-		fmt.Println(cmd)
+		fmt.Printf("init PID: %d \n", os.Getpid())
+		//cmd := context.Args().Get(0)
 		for {
 			fmt.Println(time.Now())
-			time.Sleep(1 * time.Second)
+			time.Sleep(5 * time.Second)
 		}
 		return nil
 		//return container.RunContainerInitProcess(cmd, nil)

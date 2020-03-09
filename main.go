@@ -1,9 +1,10 @@
 package main
 
 import (
+	"os"
+
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
-	"os"
 )
 
 const usage = `go-docker`
@@ -26,4 +27,3 @@ func main() {
 		logrus.Fatal(err)
 	}
 }
-

@@ -8,6 +8,7 @@
 # syscall.Exec启动进程和os/exec.Command启动进程的区别
 
 * os/exec.Command("/bin/sh")启动/bin/sh程序
+可以看到父子进程的PID是不同的
 
 ```
 func main()  {
@@ -28,6 +29,7 @@ root@nicktming:~/go/src/github.com/nicktming/mydocker/test/syscall# go run TestE
 ```
 
 * syscall.Exec启动/bin/sh进程
+可以看到父子进程的PID是相同的，也就是说子进程已经吃掉了父进程了
 
 ```
 func main()  {

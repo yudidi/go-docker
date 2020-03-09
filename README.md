@@ -29,7 +29,7 @@ root@nicktming:~/go/src/github.com/nicktming/mydocker/test/syscall# go run TestE
 ```
 
 * syscall.Exec启动/bin/sh进程
-可以看到父子进程的PID是相同的，`也就是说子进程已经吃掉了父进程`
+可以看到父子进程的PID是相同的，`也就是说子进程已经吃掉了父进程`,pid20872已经是/bin/sh进程了，不再是go进程了。
 
 ```
 func main()  {

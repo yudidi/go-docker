@@ -19,6 +19,25 @@
 
 # 测试通过程序启动init命令，但是init只打印数据，不启动用户进程。
 
-* 感受下在进程中调用另一个进程的过程
+* 感受下在进程中用"exec.Command("/proc/self/exe", "init").Start()"启动一个进程(这个进程恰好是自己)
 
 运行结果: 进程2不去启动进程3，只是打印一些东西。
+
+```
+// 初始化容器内容,挂载proc文件系统，运行用户执行程序
+var initCommand = cli.Command{
+	Name:  "init",
+	Usage: "Init container process run user's process in container. Do not call it outside",
+	Action: func(context *cli.Context) error {
+		logrus.Infof("init come on")
+		cmd := context.Args().Get(0)
+		fmt.Println(cmd)
+		for {
+			fmt.Println(time.Now())
+			time.Sleep(1 * time.Second)
+		}
+		return nil
+		//return container.RunContainerInitProcess(cmd, nil) // 注意这里并不会去启动用户传入的进程。// init进程是通过
+	},
+}
+```

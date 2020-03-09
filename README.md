@@ -39,4 +39,15 @@ var initCommand = cli.Command{
 	},
 }
 ```
-kill 进程1，init进程仍然会继续打印
+# 编译和运行结果如下
+```
+[root@192 go-docker]# go build .
+[root@192 go-docker]# ./go-docker run --ti /bin/sh
+run PID: 17489
+init PID: 1
+2020-03-08 03:51:25.170607874 -0400 EDT m=+0.000872106
+2020-03-08 03:51:30.17159265 -0400 EDT m=+5.001856986
+```
+
+## kill 进程1，init进程仍然会继续打印
+

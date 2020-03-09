@@ -29,8 +29,7 @@ var runCommand = cli.Command{
 		// cmd 为容器启动后运行的第一个命令程序
 		cmd := context.Args().Get(0)
 		tty := context.Bool("ti")
-		//return Run(cmd, tty)
-		return container.NewParentProcess(cmd, tty)
+		return container.NewParentProcess(cmd, tty).Run()
 	},
 }
 

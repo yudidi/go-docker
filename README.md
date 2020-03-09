@@ -21,11 +21,16 @@ func main()  {
     if err := cmd.Run(); err != nil {
     }
 }
-// output // 可以看到PID是不同的
-root@nicktming:~/go/src/github.com/nicktming/mydocker/test/syscall# go run TestExec.go 
-2019/03/25 23:47:29 pid:20255
-# echo $$
-20258
+// 在shell中运行该程序会启动3个进程
+[root@192 invoke_other]# go run cmd/main.go
+2020/03/08 06:13:14 pid:18266
+sh-4.2# echo $$
+18269
+
+// ps -ef //查看到启动了3个进程,依次是shell进程,go进程,sh进程
+root      18244  18128  1 06:13 pts/0    00:00:00 go run cmd/main.go
+root      18266  18244  0 06:13 pts/0    00:00:00 /tmp/go-build708334208/b001/exe/main
+root      18269  18266  0 06:13 pts/0    00:00:00 sh
 ```
 
 * syscall.Exec启动/bin/sh进程
@@ -38,11 +43,15 @@ func main()  {
     if err := syscall.Exec(command, []string{command}, os.Environ()); err != nil {
     }   
 }
-//output 可以看到PID是一样的，也就是/bin/sh完全替代了go进程的进程信息。这也是linux中exec系统函数本来的功能
-root@nicktming:~/go/src/github.com/nicktming/mydocker/test/syscall# go run TestExec.go 
-2019/03/25 23:53:52 pid:20872
-# echo $$
-20872
+// 在shell中运行该程序会启动2个进程
+[root@192 invoke_other]# go run exec/main.go
+2020/03/08 06:17:37 pid:18318
+[root@192 invoke_other]# echo $$
+18318
+// 可以看到go进程已经没有了
+root      18296  18128  1 06:17 pts/0    00:00:00 go run exec/main.go
+root      18318  18296  0 06:17 pts/0    00:00:00 [sh]
+root      18342  18197  0 06:17 pts/1    00:00:00 ps -ef
 ```
 
  

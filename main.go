@@ -42,7 +42,6 @@ var RunCommand = cli.Command{
 
 func Run(command string, tty bool) error {
 	//cmd := exec.Command(command)
-	// TODO 改动: run进程中启动init进程用于mount proc
 	cmd := exec.Command("/proc/self/exe", "init", command)
 	// 给self/exe进程增加NS隔离
 	cmd.SysProcAttr = &syscall.SysProcAttr{
@@ -58,6 +57,9 @@ func Run(command string, tty bool) error {
 
 // 在self/exe进程中mount proc，并且启动用户进程并替换掉self/exe进程。使得用户进程获得self/exe的NS和PID等信息。
 func Init(command string) {
+	// TODO 改动(原理还不太懂): systemd 加入linux之后, mount namespace 就变成 shared by default, 所以你必须显示声明你要这个新的mount namespace独立。
+	syscall.Mount("", "/", "", syscall.MS_PRIVATE|syscall.MS_REC, "")
+
 	defaultMountFlags := syscall.MS_NOEXEC | syscall.MS_NOSUID | syscall.MS_NODEV
 	syscall.Mount("proc", "/proc", "proc", uintptr(defaultMountFlags), "")
 	cmd := exec.Command(command)

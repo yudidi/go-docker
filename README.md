@@ -7,9 +7,10 @@ scp ./go-docker root@192.168.244.130:/root/go-docker/go-docker
 
 
 # 改动
-为了在用户进程启动前执行mount proc操作。
-需要proc/self/exe启动一个新进程,在proc/self/exe进程中mount proc，并且启动用户进程并替换掉self/exe进程。
-使得用户进程获得self/exe的NS和PID等信息。
+用户进程启动前执行mount proc会导致宿主机挂载的proc失效。
+我们需要避免这种影响。
+
+> [namespace里面mount /proc 后,退出后要重新mount](https://blog.csdn.net/qq_27068845/article/details/90705925)
 
 # 编译和运行结果如下
 ```
@@ -17,13 +18,18 @@ scp ./go-docker root@192.168.244.130:/root/go-docker/go-docker
 [root@192 go-docker]# ./go-docker run --it /bin/sh
 sh-4.2# ps
    PID TTY          TIME CMD
-     1 pts/2    00:00:00 exe
-     4 pts/2    00:00:00 sh
-     5 pts/2    00:00:00 ps
+     1 pts/0    00:00:00 exe
+     4 pts/0    00:00:00 sh
+     5 pts/0    00:00:00 ps
      
-=== shell 2(宿主机)====
+=== shell 2(宿主机)==== // 已经没有影响了
+[root@192 ~]# mount |grep proc
+proc on /proc type proc (rw,nosuid,nodev,noexec,relatime)
+systemd-1 on /proc/sys/fs/binfmt_misc type autofs (rw,relatime,fd=31,pgrp=1,timeout=0,minproto=5,maxproto=5,direct,pipe_ino=13811)
 [root@192 ~]# ps
-Error, do this: mount -t proc proc /proc    
+   PID TTY          TIME CMD
+  1340 pts/1    00:00:00 bash
+  1371 pts/1    00:00:00 ps
 ```
 
 ## kill 进程1，init进程仍然会继续打印

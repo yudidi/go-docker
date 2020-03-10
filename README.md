@@ -23,7 +23,9 @@ sh-4.2# ps
      
 === shell 2(宿主机)====
 [root@192 ~]# ps
-Error, do this: mount -t proc proc /proc    
+Error, do this: mount -t proc proc /proc
+[root@192 ~]# mount |grep proc
+mount: 读取 mtab 失败: 没有那个文件或目录  
 ```
 
 ## kill 进程1，init进程仍然会继续打印

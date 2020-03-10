@@ -1,3 +1,11 @@
+# Mac 下编译 Linux 和 Windows 64位可执行程序
+
+rm ./go-docker
+CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build .
+
+scp ./go-docker root@192.168.244.130:/root/go-docker/go-docker
+
+
 # 理解这个运行过程
 
 * 涉及3个进程和一次进程替换

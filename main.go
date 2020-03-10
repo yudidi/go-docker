@@ -1,29 +1,23 @@
 package main
 
 import (
+	"log"
 	"os"
 
-	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
 )
 
-const usage = `go-docker`
-
 func main() {
 	app := cli.NewApp()
-	app.Name = "go-docker"
-	app.Usage = usage
+	app.Name = "mydocker"
+	app.Usage = "implementation of mydocker"
 
 	app.Commands = []cli.Command{
-		runCommand,
-		initCommand,
+		command.RunCommand,
 	}
-	app.Before = func(context *cli.Context) error {
-		logrus.SetFormatter(&logrus.JSONFormatter{})
-		logrus.SetOutput(os.Stdout)
-		return nil
-	}
-	if err := app.Run(os.Args); err != nil {
-		logrus.Fatal(err)
+
+	err := app.Run(os.Args)
+	if err != nil {
+		log.Fatal(err)
 	}
 }
